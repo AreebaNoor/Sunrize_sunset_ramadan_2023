@@ -1,1 +1,35 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <title>Sunrize_sunset_today</title>
+    <style>
+        @font-face {
+            font-family: ATypewriterForMe;
+            src: url(./Media/ATypewriterForMe.ttf);
+        }
+        div p{
+            font-family: ATypewriterForMe;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <p id="sunrize"></p>
+    </div>
+    <div>
+        <p id="sunset"></p>
+    </div>
+</body>
+<script>
+    let sunrizeEl = document.getElementsById("sunrize");
+    let sunsetEl = document.getElementsById("sunset");
 
+    sunrizeEl.innerHTML = "Sunrize: ";
+    sunsetEl.innerHTML = "Sunset: ";
+
+
+</script>
+
+</html>
