@@ -1,3 +1,6 @@
+<!--https://www.geeksforgeeks.org/how-to-use-the-javascript-fetch-api-to-get-data/-->
+
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -6,30 +9,100 @@
     <style>
         @font-face {
             font-family: ATypewriterForMe;
-            src: url(./Media/ATypewriterForMe.ttf);
+            src: url(ATypewriterForMe.ttf);
         }
-        div p{
+        body {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+        p {
+            background-color: rgb(208, 199, 200);
             font-family: ATypewriterForMe;
             font-size: 16px;
+            font-weight: bold;
+            padding: 7px;
+            width: 180px;
+            text-align: left;
+            margin: 0; 
         }
     </style>
 </head>
 <body>
-    <div>
-        <p id="sunrize"></p>
-    </div>
-    <div>
-        <p id="sunset"></p>
-    </div>
+    <p id="sunrise"></p>
+    <p id="sunset"></p>
 </body>
 <script>
-    let sunrizeEl = document.getElementsById("sunrize");
-    let sunsetEl = document.getElementsById("sunset");
+    let sunriseEl = document.getElementById("sunrise");
+    let sunsetEl = document.getElementById("sunset");
+    let todaySunrise = "";
+    let todaySunset = "";
+    let first15 = [];
+    let last15 = [];
 
-    sunrizeEl.innerHTML = "Sunrize: ";
-    sunsetEl.innerHTML = "Sunset: ";
+    // Create today's date
+    let todayDate = new Date();
+    let dd = String(todayDate.getDate()).padStart(2, '0');
+    let mm = String(todayDate.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = todayDate.getFullYear();
+    todayDate = yyyy  + "-" + mm + "-" + dd ;
 
+    //todayDate = "2023-04-06"; 
+    //let i = 0;
+
+    const url = "https://api.met.no/weatherapi/sunrise/2.0/.json?date=2023-03-23&days=15&height=0&lat=59.9&lon=10.7&offset=%2B01%3A00";
+    const url2 = "https://api.met.no/weatherapi/sunrise/2.0/.json?date=2023-04-07&days=15&lat=59.9&lon=10.7&offset=%2B01%3A00";
+    async function fetchApi(url, url2) {
+        const response = await fetch(url);
+        const response2 = await fetch(url2);
+        let data = await response.json();
+        let data2 = await response2.json();
+        console.log(data);
+        console.log(data2);
+
+        for (let a=0; a<data.location.time.length-1; a++) {
+            first15.push(data.location.time[a].date)
+        }
+        console.log(first15)
+        for (let b=0; b<data2.location.time.length-1; b++) {
+            last15.push(data2.location.time[b].date)
+        }
+        console.log(last15)
+
+        if (first15.includes(todayDate) === true) {
+            console.log(first15.length)
+            for (let i=0; i<data.location.time.length; i++) {
+                let checkdate = data.location.time[i].date;
+                console.log(data.location.time.length)
+                if (checkdate == todayDate) {
+                    todaySunrise = data.location.time[i].sunrise.time.toString().slice(11, 19);
+                    todaySunset = data.location.time[i].sunset.time.toString().slice(11, 19);
+                }
+            }
+        }
+
+        else if (last15.includes(todayDate) == true) {
+            console.log(last15.length)
+            for (let j=0; j<data2.location.time.length; j++) {
+                let checkdate2 = data2.location.time[j].date;
+                console.log(data2.location.time.length)
+                if (checkdate2 == todayDate) {
+                        todaySunrise = data2.location.time[j].sunrise.time.toString().slice(11, 19);
+                        todaySunset = data2.location.time[j].sunset.time.toString().slice(11, 19);
+                }
+            }
+        }
+        else {
+            todaySunrise = "--:--:--"
+            todaySunset = "--:--:--"
+        }
+
+
+        sunriseEl.innerHTML = "Sehri time: " + todaySunrise;
+        sunsetEl.innerHTML = "Iftar time: " + todaySunset;
+    }
+    
+    fetchApi(url, url2);
 
 </script>
-
 </html>
