@@ -9,7 +9,7 @@
     <style>
         @font-face {
             font-family: ATypewriterForMe;
-            src: url(./Media/ATypewriterForMe.ttf);
+            src: url(ATypewriterForMe.ttf);
         }
         body {
             display: flex;
@@ -57,23 +57,17 @@
         const response2 = await fetch(url2);
         let data = await response.json();
         let data2 = await response2.json();
-        console.log(data);
-        console.log(data2);
 
         for (let a=0; a<data.location.time.length-1; a++) {
             first15.push(data.location.time[a].date)
         }
-        console.log(first15)
         for (let b=0; b<data2.location.time.length-1; b++) {
             last15.push(data2.location.time[b].date)
         }
-        console.log(last15)
 
         if (first15.includes(todayDate) === true) {
-            console.log(first15.length)
             for (let i=0; i<data.location.time.length; i++) {
                 let checkdate = data.location.time[i].date;
-                console.log(data.location.time.length)
                 if (checkdate == todayDate) {
                     todaySunrise = data.location.time[i].sunrise.time.toString().slice(11, 19);
                     todaySunset = data.location.time[i].sunset.time.toString().slice(11, 19);
@@ -82,10 +76,8 @@
         }
 
         else if (last15.includes(todayDate) == true) {
-            console.log(last15.length)
             for (let j=0; j<data2.location.time.length; j++) {
                 let checkdate2 = data2.location.time[j].date;
-                console.log(data2.location.time.length)
                 if (checkdate2 == todayDate) {
                         todaySunrise = data2.location.time[j].sunrise.time.toString().slice(11, 19);
                         todaySunset = data2.location.time[j].sunset.time.toString().slice(11, 19);
