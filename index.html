@@ -22,7 +22,7 @@
             font-size: 16px;
             font-weight: bold;
             padding: 7px;
-            width: 180px;
+            width: 150px;
             text-align: left;
             margin: 0; 
         }
@@ -33,7 +33,6 @@
         <p id="sunrise"></p>
         <p id="sunset"></p>
     </div>
-    <img src="./Media/Moon.PNG" alt="Moon" >
 </body>
 <script>
     let sunriseEl = document.getElementById("sunrise");
@@ -90,8 +89,8 @@
             }
         }
         else {
-            todaySunrise = "--:--:--";
-            todaySunset = "--:--:--";
+            todaySunrise = "--:--";
+            todaySunset = "--:--";
         }
 
         sunriseEl.innerHTML = "Sehri time: " + todaySunrise;
