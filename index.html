@@ -11,7 +11,7 @@
             font-family: ATypewriterForMe;
             src: url(./Media/ATypewriterForMe.ttf);
         }
-        body {
+        .timeslotsDiv {
             display: flex;
             flex-direction: column;
             gap: 7px;
@@ -29,72 +29,78 @@
     </style>
 </head>
 <body>
-    <p id="sunrise"></p>
-    <p id="sunset"></p>
+    <div class="timeslotsDiv">
+        <p id="sunrise"></p>
+        <p id="sunset"></p>
+    </div>
+    <img src="./Media/Moon.PNG" alt="Moon" >
 </body>
 <script>
     let sunriseEl = document.getElementById("sunrise");
     let sunsetEl = document.getElementById("sunset");
-    let todaySunrise = "";
-    let todaySunset = "";
-    let first15 = [];
-    let last15 = [];
+    let addIconEl = document.getElementById("addIcon");
+
+    let TSunrise = "";
+    let TSunset = "";
+
+    let dates1 = [];
+    let dates2 = [];
+
 
     // Create today's date
     let todayDate = new Date();
     let dd = String(todayDate.getDate()).padStart(2, '0');
     let mm = String(todayDate.getMonth() + 1).padStart(2, '0'); //January is 0!
     let yyyy = todayDate.getFullYear();
-    todayDate = yyyy  + "-" + mm + "-" + dd ;
+    todayDate = dd + "-" + mm + "-" + yyyy;
 
-    //todayDate = "2023-04-06"; 
+    //todayDate = "22-04-2023"; //test
     //let i = 0;
 
-    const url = "https://api.met.no/weatherapi/sunrise/2.0/.json?date=2023-03-23&days=15&height=0&lat=59.9&lon=10.7&offset=%2B01%3A00";
-    const url2 = "https://api.met.no/weatherapi/sunrise/2.0/.json?date=2023-04-07&days=15&lat=59.9&lon=10.7&offset=%2B01%3A00";
-    async function fetchApi(url, url2) {
-        const response = await fetch(url);
-        const response2 = await fetch(url2);
-        let data = await response.json();
+    const aladhanRequestMarch = "http://api.aladhan.com/v1/calendar/2023/3?latitude=59.91139&longitude=10.7522&method=3"
+    const aladhanRequestApril = "http://api.aladhan.com/v1/calendar/2023/4?latitude=59.91139&longitude=10.7522&method=3"
+    async function fetchApi3(aladhanRequestMarch, aladhanRequestApril) {
+        const response1 = await fetch(aladhanRequestMarch);
+        const response2 = await fetch(aladhanRequestApril);
+        let data1 = await response1.json();
         let data2 = await response2.json();
 
-        for (let a=0; a<data.location.time.length-1; a++) {
-            first15.push(data.location.time[a].date)
+        for (let a=0; a<data1.data.length; a++) {
+            dates1.push(data1.data[a].date.gregorian.date)
         }
-        for (let b=0; b<data2.location.time.length-1; b++) {
-            last15.push(data2.location.time[b].date)
+        for (let b=0; b<data2.data.length; b++) {
+            dates2.push(data2.data[b].date.gregorian.date)
         }
 
-        if (first15.includes(todayDate) === true) {
-            for (let i=0; i<data.location.time.length; i++) {
-                let checkdate = data.location.time[i].date;
-                if (checkdate == todayDate) {
-                    todaySunrise = data.location.time[i].sunrise.time.toString().slice(11, 19);
-                    todaySunset = data.location.time[i].sunset.time.toString().slice(11, 19);
+        if (dates1.includes(todayDate) == true) {
+            for (let i=0; i<dates1.length; i++) {
+                if (todayDate == dates1[i]) {
+                    todaySunrise = data1.data[i].timings.Fajr.toString().slice(0, 5);
+                    todaySunset = data1.data[i].timings.Maghrib.toString().slice(0, 5);
                 }
             }
         }
 
-        else if (last15.includes(todayDate) == true) {
-            for (let j=0; j<data2.location.time.length; j++) {
-                let checkdate2 = data2.location.time[j].date;
-                if (checkdate2 == todayDate) {
-                        todaySunrise = data2.location.time[j].sunrise.time.toString().slice(11, 19);
-                        todaySunset = data2.location.time[j].sunset.time.toString().slice(11, 19);
+        else if (dates2.includes(todayDate) == true) {
+            for (let j=0; j<dates2.length; j++) {
+                if (todayDate == dates2[j]) {
+                    todaySunrise = data2.data[j].timings.Fajr.toString().slice(0, 5);
+                    todaySunset = data2.data[j].timings.Maghrib.toString().slice(0, 5);
                 }
             }
         }
         else {
-            todaySunrise = "--:--:--"
-            todaySunset = "--:--:--"
+            todaySunrise = "--:--:--";
+            todaySunset = "--:--:--";
         }
-
 
         sunriseEl.innerHTML = "Sehri time: " + todaySunrise;
         sunsetEl.innerHTML = "Iftar time: " + todaySunset;
+
+        //console.log(data1);
+        //console.log(data2);
     }
-    
-    fetchApi(url, url2);
+    datasett = fetchApi3(aladhanRequestMarch, aladhanRequestApril);
 
 </script>
 </html>
