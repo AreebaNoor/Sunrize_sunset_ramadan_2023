@@ -1,17 +1,16 @@
-<!--https://www.geeksforgeeks.org/how-to-use-the-javascript-fetch-api-to-get-data/-->
-
-
 <!DOCTYPE html>
 <html lang="no">
 <head>
     <meta charset="UTF-8">
-    <title>Sunrize_sunset_today</title>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+    <title>Prayer Times</title>
+
     <style>
         @font-face {
             font-family: ATypewriterForMe;
             src: url(./Media/ATypewriterForMe.ttf);
         }
-        .timeslotsDiv {
+        .flexDiv {
             display: flex;
             flex-direction: column;
             gap: 7px;
@@ -21,7 +20,7 @@
             font-family: ATypewriterForMe;
             font-size: 16px;
             font-weight: bold;
-            padding: 7px;
+            padding: 7px 10px;
             width: 150px;
             text-align: left;
             margin: 0; 
@@ -29,77 +28,61 @@
     </style>
 </head>
 <body>
-    <div class="timeslotsDiv">
-        <p id="sunrise"></p>
-        <p id="sunset"></p>
+    <div class="flexDiv">
+        <p id="fajrP"></p>
+        <p id="maghribP"></p>
     </div>
+
+    <script type="module">
+        let fajrEl = document.getElementById("fajrP");
+        let maghribEl = document.getElementById("maghribP");
+
+        // Create today's date
+        let todayDate = new Date();
+        let dd = String(todayDate.getDate()).padStart(2, '0');
+        let mm = String(todayDate.getMonth() + 1).padStart(2, '0'); //January is 0!
+        let yyyy = todayDate.getFullYear();
+        todayDate = dd + "-" + mm + "-" + yyyy;
+
+        const csvData = new Array;
+        for (let p=0; p<3; p++) {
+            csvData.push([]);
+        }
+
+    //console.log(todayDate)
+    
+        Papa.parse('Bonnetid_Oslo_2023-03.csv', {
+            download: true, 
+            header: true,
+            complete: function (loaddata1) {
+                for (let a=0; a<loaddata1.data.length; a++) {
+                    csvData[0].push(loaddata1.data[a].Dato);
+                    csvData[1].push(loaddata1.data[a].Fajr);
+                    csvData[2].push(loaddata1.data[a].Maghrib);
+                }
+            }
+        });
+        
+        Papa.parse('Bonnetid_Oslo_2023-04.csv', {
+            download: true, 
+            header: true,
+            complete: function (loaddata2) {
+                for (let b=0; b<loaddata2.data.length; b++) {
+                    csvData[0].push(loaddata2.data[b].Dato);
+                    csvData[1].push(loaddata2.data[b].Fajr);
+                    csvData[2].push(loaddata2.data[b].Maghrib);
+                }
+                for (let j=0; j<csvData[0].length; j++) {
+                    if (csvData[0][j] == todayDate) {
+                        fajrEl.innerHTML = "Sehri time: " + csvData[1][j];
+                        maghribEl.innerHTML = "Iftar time: " + csvData[2][j];
+                    }
+                }
+            }
+        });
+        
+
+    </script>
+    
 </body>
-<script>
-    let sunriseEl = document.getElementById("sunrise");
-    let sunsetEl = document.getElementById("sunset");
-    let addIconEl = document.getElementById("addIcon");
-
-    let TSunrise = "";
-    let TSunset = "";
-
-    let dates1 = [];
-    let dates2 = [];
-
-
-    // Create today's date
-    let todayDate = new Date();
-    let dd = String(todayDate.getDate()).padStart(2, '0');
-    let mm = String(todayDate.getMonth() + 1).padStart(2, '0'); //January is 0!
-    let yyyy = todayDate.getFullYear();
-    todayDate = dd + "-" + mm + "-" + yyyy;
-
-    //todayDate = "22-04-2023"; //test
-    //let i = 0;
-
-    const aladhanRequestMarch = "https://api.aladhan.com/v1/calendar/2023/3?latitude=59.91139&longitude=10.7522&method=3"
-    const aladhanRequestApril = "https://api.aladhan.com/v1/calendar/2023/4?latitude=59.91139&longitude=10.7522&method=3"
-    async function fetchApi3(aladhanRequestMarch, aladhanRequestApril) {
-        const response1 = await fetch(aladhanRequestMarch);
-        const response2 = await fetch(aladhanRequestApril);
-        let data1 = await response1.json();
-        let data2 = await response2.json();
-
-        for (let a=0; a<data1.data.length; a++) {
-            dates1.push(data1.data[a].date.gregorian.date)
-        }
-        for (let b=0; b<data2.data.length; b++) {
-            dates2.push(data2.data[b].date.gregorian.date)
-        }
-
-        if (dates1.includes(todayDate) == true) {
-            for (let i=0; i<dates1.length; i++) {
-                if (todayDate == dates1[i]) {
-                    todaySunrise = data1.data[i].timings.Fajr.toString().slice(0, 5);
-                    todaySunset = data1.data[i].timings.Maghrib.toString().slice(0, 5);
-                }
-            }
-        }
-
-        else if (dates2.includes(todayDate) == true) {
-            for (let j=0; j<dates2.length; j++) {
-                if (todayDate == dates2[j]) {
-                    todaySunrise = data2.data[j].timings.Fajr.toString().slice(0, 5);
-                    todaySunset = data2.data[j].timings.Maghrib.toString().slice(0, 5);
-                }
-            }
-        }
-        else {
-            todaySunrise = "--:--";
-            todaySunset = "--:--";
-        }
-
-        sunriseEl.innerHTML = "Sehri time: " + todaySunrise;
-        sunsetEl.innerHTML = "Iftar time: " + todaySunset;
-
-        //console.log(data1);
-        //console.log(data2);
-    }
-    datasett = fetchApi3(aladhanRequestMarch, aladhanRequestApril);
-
-</script>
 </html>
