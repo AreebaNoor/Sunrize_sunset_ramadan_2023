@@ -50,20 +50,8 @@
         }
 
     //console.log(todayDate)
-    
-        Papa.parse('Bonnetid_Oslo_2025-03.csv', {
-            download: true, 
-            header: true,
-            complete: function (loaddata1) {
-                for (let a=0; a<loaddata1.data.length; a++) {
-                    csvData[0].push(loaddata1.data[a].Dato);
-                    csvData[1].push(loaddata1.data[a].Fajr);
-                    csvData[2].push(loaddata1.data[a].Maghrib);
-                }
-            }
-        });
         
-        Papa.parse('Bonnetid_Oslo_2024-04.csv', {
+        Papa.parse('Bonnetid_Oslo_2025-03.csv', {
             download: true, 
             header: true,
             complete: function (loaddata2) {
