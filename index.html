@@ -51,7 +51,7 @@
 
     //console.log(todayDate)
         
-        Papa.parse('Bonnetid_Oslo_2025-03.csv', {
+        Papa.parse('Bonnetid_Oslo_2026-02.csv', {
             download: true, 
             header: true,
             complete: function (loaddata2) {
@@ -68,7 +68,24 @@
                 }
             }
         });
-        
+
+        Papa.parse('Bonnetid_Oslo_2026-03.csv', {
+            download: true, 
+            header: true,
+            complete: function (loaddata2) {
+                for (let b=0; b<loaddata2.data.length; b++) {
+                    csvData[0].push(loaddata2.data[b].Dato);
+                    csvData[1].push(loaddata2.data[b].Fajr);
+                    csvData[2].push(loaddata2.data[b].Maghrib);
+                }
+                for (let j=0; j<csvData[0].length; j++) {
+                    if (csvData[0][j] == todayDate) {
+                        fajrEl.innerHTML = "Sehri time: " + csvData[1][j];
+                        maghribEl.innerHTML = "Iftar time: " + csvData[2][j];
+                    }
+                }
+            }
+        });
 
     </script>
     
